@@ -1,26 +1,36 @@
 <idea-plugin>
   <id>com.capital.cloud.liufuqiang</id>
   <name>Generate Resource SQL</name>
-  <version>1.0.0</version>
-  <vendor email="fuqiang.liu@valueonline.cn" url="http://www.valueonline.cn">liufuqiang</vendor>
+  <version>1.0.3</version>
+  <vendor email="fuqiang.liu@valueonline.cn" url="https://www.cnblogs.com/LiuFqiang">liufuqiang</vendor>
 
-  <description><![CDATA[
-     generate-resource-sql是一款idea为了快速生成云端、企业端接口对应的资源、角色资源表sql插件<br>
-     <em>主要功能如下：</em><br>
-     解析Controller类里对外接口的url，方法注释描述，生成sa_resource、sa_role_resource表对应的sql语句<br>
-     <em>注意：</em><br>
-     controller类里面方法上的注释对应资源描述，可以支持单行注释，多行注释
-
-     <em>使用方法：</em><br>
+  <description>
+    <![CDATA[
+     Generate resource SQL is an SQL plug-in for resource and role resource tables corresponding to the idea project interface<br>
+     The main functions are as follows：<br>
+     Parse the URL of the external interface in the controller class, annotate the method description, and generate resource、role SQL statement corresponding to resource table<br>
+     note：<br>
+     The annotation on the method in the controller class corresponds to the resource description. It can support single line annotation and multi line annotation
+     <br>
+     how to use：<br>
         <ol>
-          <li>导入插件，并重启idea</li>
-          <li>在当前编辑页面右击</li>
-          <li>点击Generate Resource SQL</li>
+          <li>Import the plug-in and restart idea</li>
+          <li>Right click on the current edit page</li>
+          <li>Click Generate resource SQL</li>
         </ol>
-    ]]></description>
+    <br>
+    <a href="https://www.cnblogs.com/LiuFqiang/p/15430069.html">Plugin introduce</a>&nbsp&nbsp|
+    <a href="https://github.com/LiuFqiang/GeneratePlugin/issues">Report an issue</a>&nbsp&nbsp|
+    <a href="https://github.com/LiuFqiang/GeneratePlugin">On Github</a>
+    ]]>
+  </description>
 
-  <change-notes><![CDATA[
+  <change-notes>
+    <![CDATA[
       1.0.0 init project <br>
+      1.0.1 Modify the output SQL statement <br>
+      1.0.2 compatible <br>
+      1.0.3 translate description <br>
     ]]>
   </change-notes>
 
@@ -30,6 +40,8 @@
   <!-- please see https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html
        on how to target different products -->
   <depends>com.intellij.modules.platform</depends>
+  <depends>com.intellij.modules.lang</depends>
+  <depends>com.intellij.modules.java</depends>
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Add your extensions here -->
@@ -43,8 +55,4 @@
       <keyboard-shortcut keymap="$default" first-keystroke="ctrl S" second-keystroke="B"/>
     </action>
   </actions>
-
-  <depends>com.intellij.modules.platform</depends>
-  <depends>com.intellij.modules.lang</depends>
-  <depends>com.intellij.modules.java</depends>
 </idea-plugin>

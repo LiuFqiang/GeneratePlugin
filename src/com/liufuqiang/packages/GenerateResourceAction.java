@@ -114,6 +114,7 @@ public class GenerateResourceAction extends AnAction {
     public void outputSqlInfo(Editor editor, List<Map<String, String>> resourceList) {
         StringBuilder sb = new StringBuilder();
         sb.append("-- sa_resource");
+        sb.append("\n");
         sb.append("SET @parent_id = \"0\";\n");
         for (Map<String, String> param : resourceList) {
             String resourceSql = "INSERT INTO `sa_resource` (`id`, `p_id`, `resource_name`, `resource_des`, `resource_type`, `resource_url`, `curr_status`, `relation`, `company_id`, `create_user`, `create_time`,`update_user`, `update_time`, `status`) \n" +
@@ -121,6 +122,18 @@ public class GenerateResourceAction extends AnAction {
             sb.append(String.format(resourceSql, param.get("resource_name"), param.get("resource_des"), param.get("resource_url")));
             sb.append("\n");
         }
+
+        sb.append("-- sa_role_resource");
+        sb.append("\n");
+        sb.append("SET @role_id = \"需要替换为自己的role_id\";\n");
+        sb.append("\n");
+        for (Map<String, String> param : resourceList) {
+            String resourceRoleSql = "INSERT INTO `sa_role_resource_map`(`id`, `role_id`, `resource_id`, `authority_flag`) VALUES\n" +
+                    "(CONCAT(UUID_SHORT(),''), @role_id, (select id from sa_resource where resource_url = %s), '1';\n";
+            sb.append(String.format(resourceRoleSql, param.get("resource_url")));
+            sb.append("\n");
+        }
+
         Messages.showMessageDialog(editor.getProject(), sb.toString(), "总共有方法" + resourceList.size() + "个", Messages.getInformationIcon());
     }
 
