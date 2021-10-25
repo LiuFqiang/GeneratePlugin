@@ -1,19 +1,26 @@
 package com.liufuqiang.packages;
 
+import com.google.common.base.Joiner;
+import com.intellij.ide.dnd.aware.DnDAwareTree;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiUtilBase;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.xmlbeans.impl.soap.MessageFactory;
 
 import javax.swing.tree.DefaultMutableTreeNode;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @date 2021/10/21
@@ -23,19 +30,24 @@ public class GenerateResourceAction extends AnAction {
 
     private static final String PREFIX = "/";
 
+    private static Clipboard clipboard = null;
+
     @Override
     public void actionPerformed(AnActionEvent event) {
         Editor editor = event.getData(PlatformDataKeys.EDITOR);
         PsiFile psiFile = PsiUtilBase.getPsiFileInEditor(editor, editor.getProject());
+        String fileName = psiFile.getVirtualFile().getName();
+
         //只读文件直接返回
         if( psiFile.getFileType().isReadOnly()){
+            NotificationUtils.notifyError(editor.getProject(), fileName + "为只读文件");
             return;
         }
 
-        String fileName = psiFile.getVirtualFile().getName();
         // 判断文件后缀是不是Controller
         String fileSuffix = "Controller.java";
         if (!fileName.endsWith(fileSuffix)) {
+            NotificationUtils.notifyError(editor.getProject(), fileName + "文件没有接口");
             return;
         }
 
@@ -84,9 +96,6 @@ public class GenerateResourceAction extends AnAction {
 
                        // resource_name
                        String resourceName = humpToUnderline(resourceUrl);
-                       if (resourceName.length() > 50) {
-                           resourceName = resourceName.substring(0, 50);
-                       }
                        params.put("resource_name", resourceName);
 
                        // resource_desc
@@ -98,6 +107,7 @@ public class GenerateResourceAction extends AnAction {
                    }
                }
                if (resourceList.size() == 0) {
+                   NotificationUtils.notifyError(editor.getProject(), fileName + "文件没有接口");
                    return;
                }
 
@@ -112,6 +122,8 @@ public class GenerateResourceAction extends AnAction {
      * @param resourceList
      */
     public void outputSqlInfo(Editor editor, List<Map<String, String>> resourceList) {
+        PsiFile psiFile = PsiUtilBase.getPsiFileInEditor(editor, editor.getProject());
+        String fileName = psiFile.getVirtualFile().getName();
         StringBuilder sb = new StringBuilder();
         sb.append("-- sa_resource");
         sb.append("\n");
@@ -134,7 +146,23 @@ public class GenerateResourceAction extends AnAction {
             sb.append("\n");
         }
 
-        Messages.showMessageDialog(editor.getProject(), sb.toString(), "总共有方法" + resourceList.size() + "个", Messages.getInformationIcon());
+        List<String> exceedList = resourceList.stream()
+                .map(c -> c.get("resource_name"))
+                .filter(f -> f.length() > 50).collect(Collectors.toList());
+        String message = "云端脚本生成完成，共找到" + resourceList.size() + "个方法，";
+        if (exceedList.size() == 0) {
+            NotificationUtils.notifyInfo(editor.getProject(), message + "请替换@parent_id、@role_id");
+        } else {
+            NotificationUtils.notifyWarn(editor.getProject(), message + "资源名称过长，请保证长度小于50：" + Joiner.on("、").join(exceedList));
+        }
+
+        int result = Messages.showYesNoDialog(sb.toString(), fileName + "  sql", "一键复制", "取消", Messages.getInformationIcon());
+        if (result == Messages.YES) {
+            clipboard = java.awt.Toolkit.getDefaultToolkit().getSystemClipboard();
+            StringSelection text = new StringSelection(sb.toString());
+            clipboard.setContents(text, null);
+            NotificationUtils.notifyInfo(editor.getProject(), "复制完成 ╮(￣▽￣)╭");
+        }
     }
 
     /**
