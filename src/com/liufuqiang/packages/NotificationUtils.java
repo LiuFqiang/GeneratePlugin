@@ -3,7 +3,7 @@ package com.liufuqiang.packages;
 import com.intellij.notification.NotificationGroupManager;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.project.Project;
-import org.eclipse.sisu.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /** 通知工具类
  * @author liufuqiang
