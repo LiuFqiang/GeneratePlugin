@@ -141,7 +141,7 @@ public class GenerateResourceAction extends AnAction {
         sb.append("\n");
         for (Map<String, String> param : resourceList) {
             String resourceRoleSql = "INSERT INTO `sa_role_resource_map`(`id`, `role_id`, `resource_id`, `authority_flag`) VALUES\n" +
-                    "(CONCAT(UUID_SHORT(),''), @role_id, (select id from sa_resource where resource_url = %s), '1';\n";
+                    "(CONCAT(UUID_SHORT(),''), @role_id, (select id from sa_resource where resource_url = '%s'), '1';\n";
             sb.append(String.format(resourceRoleSql, param.get("resource_url")));
             sb.append("\n");
         }
