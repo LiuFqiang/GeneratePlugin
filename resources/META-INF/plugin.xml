@@ -23,10 +23,11 @@
       <li>Right click on the current edit page</li>
       <li>Click Generate resource SQL</li>
     </ol>
-    <a href="https://plugins.jetbrains.com/plugin/17843-generate-resource-sql/versions">Since</a>&nbsp&nbsp idea 203.8
+    <a href="https://plugins.jetbrains.com/plugin/17843-generate-resource-sql/versions">Since idea 203.8</a><br>
+    <a href="https://img2020.cnblogs.com/blog/1597479/202110/1597479-20211029105547254-204765829.gif">插件演示</a>&nbsp&nbsp|
     <a href="https://www.cnblogs.com/LiuFqiang/p/15430069.html">Plugin introduce</a>&nbsp&nbsp|
     <a href="https://github.com/LiuFqiang/GeneratePlugin/issues">Report an issue</a>&nbsp&nbsp|
-    <a href="https://github.com/LiuFqiang/GeneratePlugin">On Github</a>
+    <a href="https://github.com/LiuFqiang/GeneratePlugin">On Github</a><br>
     ]]>
   </description>
 
